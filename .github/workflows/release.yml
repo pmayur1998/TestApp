@@ -40,6 +40,7 @@ jobs:
       - name: 🚀 Distribute to Firebase App Distribution
         run: ./gradlew :app:appDistributionUploadRelease
         env:
+          FIREBASE_CREDENTIAL_PATH: ${{ github.workspace }}/firebase-service-account.json
           FIREBASE_RELEASE_NOTES: ${{ github.event.inputs.releaseNotes || 'Auto release from GitHub Actions 🚀' }}
           FIREBASE_GROUPS: ${{ secrets.FIREBASE_GROUPS }}
 
