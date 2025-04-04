@@ -1,6 +1,9 @@
+import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.appdistribution)
 }
 
 android {
@@ -11,8 +14,9 @@ android {
         applicationId = "com.example.testapp"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        val versionCodeVal = getVersionCodeFromBuildProperty("VERSION_CODE")
+        versionCode = versionCodeVal
+        versionName = generateVersionName(versionCodeVal)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -49,6 +53,25 @@ android {
     }
 }
 
+fun getVersionCodeFromBuildProperty(buildPropertyName: String): Int {
+    val properties = Properties()
+    val buildPropertiesFile = rootProject.file("build.properties")
+
+    buildPropertiesFile.inputStream().use { properties.load(it) }
+
+    val versionValue = properties.getProperty(buildPropertyName)
+        ?: error("Build property '$buildPropertyName' not found.")
+
+    return versionValue.toInt()
+}
+
+fun generateVersionName(versionCode: Int): String {
+    val major = versionCode / 100
+    val minor = (versionCode / 10) % 10
+    val patch = versionCode % 10
+    return "$major.$minor.$patch"
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -66,4 +89,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(platform(libs.firebase.bom))
+}
+firebaseAppDistribution {
+    serviceCredentialsFile = "${rootProject.rootDir}/firebase-service-account.json"
+    releaseNotes = System.getenv("FIREBASE_RELEASE_NOTES") ?: "Auto release from CI"
+    groups = System.getenv("FIREBASE_GROUPS") ?: ""
 }

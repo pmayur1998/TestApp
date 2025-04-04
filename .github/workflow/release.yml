@@ -1,0 +1,40 @@
+name: Android CI - Firebase App Distribution
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      releaseNotes:
+        description: 'Release notes for testers'
+        required: false
+
+jobs:
+  build-and-distribute:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🧰 Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🧩 Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: 🔐 Decode Firebase Service Account Key
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}" > "${{ github.workspace }}/firebase-service-account.json"
+
+      - name: 📦 Build Release APK
+        run: ./gradlew :app:assembleRelease
+
+      - name: 🚀 Distribute to Firebase App Distribution
+        run: ./gradlew :app:appDistributionUploadRelease
+        env:
+          FIREBASE_RELEASE_NOTES: ${{ github.event.inputs.releaseNotes || 'Auto release from GitHub Actions 🚀' }}
+          FIREBASE_GROUPS: ${{ secrets.FIREBASE_GROUPS }}

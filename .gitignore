@@ -27,5 +27,6 @@ output.json
 
 # Firebase & Secret Keys
 google-services.json
+*.jks
 *.keystore
 .env
