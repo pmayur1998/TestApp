@@ -45,7 +45,6 @@ jobs:
 
       - name: 📦 Build Release APK
         run: ./gradlew :app:assembleRelease
-        env:
 
       - name: 🚀 Distribute to Firebase App Distribution
         run: ./gradlew :app:appDistributionUploadRelease
