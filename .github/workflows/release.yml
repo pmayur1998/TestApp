@@ -13,6 +13,11 @@ jobs:
   build-and-distribute:
     runs-on: ubuntu-latest
 
+    env:
+      GIT_ACTION_KEY_STORE_PASSWORD: ${{secrets.KEYSTORE_PASSWORD}}
+      GIT_ACTION_KEY_PASSWORD: ${{secrets.KEY_PASSWORD}}
+      GIT_ACTION_ALIAS: ${{secrets.KEY_ALIAS}}
+
     steps:
       - name: 🔄 Checkout repo
         uses: actions/checkout@v3
@@ -40,6 +45,7 @@ jobs:
 
       - name: 📦 Build Release APK
         run: ./gradlew :app:assembleRelease
+        env:
 
       - name: 🚀 Distribute to Firebase App Distribution
         run: ./gradlew :app:appDistributionUploadRelease
