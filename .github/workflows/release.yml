@@ -26,6 +26,10 @@ jobs:
       - name: 🧩 Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: 🔐 Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+
       - name: 🔐 Decode google-services.json
         run: |
           echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > app/google-services.json
