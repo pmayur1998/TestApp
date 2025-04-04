@@ -30,3 +30,4 @@ google-services.json
 *.jks
 *.keystore
 .env
+/keystore
