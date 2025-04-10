@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.firebase.appdistribution) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt.android) apply false
 }
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
